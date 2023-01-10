@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace MyAccounts.Modules.Security
+namespace MyAccounts.Controllers
 {
     [Route("security")]
     [ApiController]
@@ -33,7 +33,7 @@ namespace MyAccounts.Modules.Security
             return Ok(token);
         }
 
-        private string GetJwtToken (User user)
+        private string GetJwtToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -41,7 +41,7 @@ namespace MyAccounts.Modules.Security
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Name, user.Person.Name),
             };
 
             var token = new JwtSecurityToken(
