@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MyAccounts.Database.Models
+namespace MyAccounts.Database.Entities
 {
     public abstract class Payment
     {
@@ -24,7 +24,7 @@ namespace MyAccounts.Database.Models
         // FOREIGNS
 
         [ForeignKey(nameof(CardId))]
-        public virtual Card Card { get; set; }
+        public virtual Card Card { get; set; } = default!;
 
         public virtual ICollection<PaymentSplit> PaymentSplits { get; set; } = Array.Empty<PaymentSplit>();
 
@@ -37,16 +37,10 @@ namespace MyAccounts.Database.Models
 
     public class DebitPayment : Payment
     {
-        [Nullable]
-        public int? CreditPaymentId { get; set; }
-
         // FOREIGNS
 
         [ForeignKey(nameof(CardId))]
-        public virtual DebitCard Card { get; set; }
-
-        [ForeignKey(nameof(CreditPaymentId))]
-        public CreditPayment? CreditPayment { get; set; }
+        public virtual new DebitCard Card { get; set; } = default!;
 
         // OTHERS
 
@@ -64,9 +58,7 @@ namespace MyAccounts.Database.Models
         // FOREIGNS
 
         [ForeignKey(nameof(CardId))]
-        public virtual CreditCard Card { get; set; }
-
-        public virtual ICollection<DebitPayment> DebitPayments { get; set; } = Array.Empty<DebitPayment>();
+        public virtual new CreditCard Card { get; set; } = default!;
 
         // OTHERS
 

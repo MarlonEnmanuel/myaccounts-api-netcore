@@ -4,11 +4,8 @@ namespace MyAccounts.Database.Enums
 {
     public enum PaymentType
     {
-        [Description("Débito")]
-        Debit = 1,
-
-        [Description("Crédito")]
-        Credit = 2,
+        [Description("Débito")] Debit = 1,
+        [Description("Crédito")] Credit = 2,
     }
 
     public static class PaymentTypeMethods

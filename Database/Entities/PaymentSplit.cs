@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace MyAccounts.Database.Models
+namespace MyAccounts.Database.Entities
 {
     [PrimaryKey(nameof(PaymentId), nameof(PersonId))]
     public class PaymentSplit

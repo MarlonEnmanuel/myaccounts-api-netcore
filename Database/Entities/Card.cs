@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MyAccounts.Database.Models
+namespace MyAccounts.Database.Entities
 {
     public abstract class Card
     {
@@ -13,12 +13,12 @@ namespace MyAccounts.Database.Models
         public string Name { get; set; }
 
         [Required]
-        public int OwnerId { get; set; }
+        public int PersonId { get; set; }
 
         // FOREIGNS
 
-        [ForeignKey(nameof(OwnerId))]
-        public Person Owner { get; set; }
+        [ForeignKey(nameof(PersonId))]
+        public virtual Person Person { get; set; }
 
         // OTHERS
 
