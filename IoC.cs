@@ -19,7 +19,7 @@ namespace MyAccounts
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<GeneralService, GeneralService>();
+            builder.Services.AddScoped<IGeneralService, GeneralService>();
             builder.Services.AddScoped<ISecurityService, SecurityService>();
         }
 
