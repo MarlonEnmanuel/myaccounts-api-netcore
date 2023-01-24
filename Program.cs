@@ -1,42 +1,19 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using MyAccounts.Database;
-using System.Text;
-using System.Text.Json.Serialization;
+using MyAccounts;
+using MyAccounts.Database.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add my accounts context
-builder.Services.AddDbContext<MyAccountsContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyAccounts")
-        ?? throw new InvalidOperationException("Connection string 'Accounts' not found."));
-});
-
-// Add JWT Autentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = true;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-    };
-});
+// Add custom configuration
+IoC.Configure(builder);
 
 var app = builder.Build();
 
-// Configure create database
+// Temporaly Configure create database
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetService<MyAccountsContext>()!;
