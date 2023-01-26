@@ -17,8 +17,8 @@ namespace MyAccounts.Database.Context
             // seed personas
             modelBuilder.Entity<Person>().HasData(new[]
             {
-                new Person ("Marlon", 1, true) { Id = 1 },
-                new Person ("Lucia" , 2, true) { Id = 2 },
+                new Person ("Marlon", 1, true, true) { Id = 1 },
+                new Person ("Lucia" , 2, true, true) { Id = 2 },
             });
 
             // seed tarjetas debito

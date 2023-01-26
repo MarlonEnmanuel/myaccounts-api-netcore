@@ -19,6 +19,9 @@ namespace MyAccounts.Database.Models
         [Required]
         public bool IsUser { get; set; }
 
+        [Required]
+        public bool IsShared { get; set; }
+
         #endregion
 
         #region Foreigns
@@ -36,11 +39,12 @@ namespace MyAccounts.Database.Models
 
         #region Others
 
-        public Person(string name, int userId, bool isUser)
+        public Person(string name, int userId, bool isUser, bool isShared)
         {
             Name = name;
             UserId = userId;
             IsUser = isUser;
+            IsShared = isShared;
         }
 
         #endregion

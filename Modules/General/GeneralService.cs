@@ -21,17 +21,24 @@ namespace MyAccounts.Modules.General
 
         public async Task<InitialDataDto> GetInitialData(int userId)
         {
-            var user = await _context.Users
-                                        .Where(u => u.Id == userId)
-                                        .Include(u => u.Persons)
-                                        .ThenInclude(p => p.Cards)
-                                        .FirstOrDefaultAsync()
-                                    ?? throw new Exception("Usuario no encontrado");
+            var persons = await GetPersonsUserCanSee(userId);
+            var mainPerson = persons.FirstOrDefault(p => p.UserId == userId && p.IsUser)
+                             ?? throw new Exception("Usuario no tiene datos personales");
+
+            _context.Entry(mainPerson).Collection(p => p.Cards).Load();
+
             return new InitialDataDto
             {
-                Persons = user.Persons ?? Array.Empty<Person>(),
-                Cards = user.UserPerson?.Cards ?? Array.Empty<Card>(),
+                Persons = persons,
+                Cards = mainPerson.Cards,
             };
+        }
+
+        private async Task<IList<Person>> GetPersonsUserCanSee(int userId)
+        {
+            return await _context.Persons.Where(p => p.UserId == userId || p.IsShared)
+                                         .OrderByDescending(p => p.UserId == userId)
+                                         .ToListAsync();
         }
     }
 }
