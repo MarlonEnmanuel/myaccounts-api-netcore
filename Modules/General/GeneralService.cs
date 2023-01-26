@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Models;
-using MyAccounts.Dtos;
+using MyAccounts.Dto;
 
 namespace MyAccounts.Modules.General
 {

@@ -1,6 +1,6 @@
 ﻿using MyAccounts.Database.Models;
 
-namespace MyAccounts.Dtos
+namespace MyAccounts.Dto
 {
     public class InitialDataDto
     {
