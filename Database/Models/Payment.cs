@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MyAccounts.Database.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace MyAccounts.Database.Models
@@ -12,6 +13,9 @@ namespace MyAccounts.Database.Models
 
         [Required]
         public int CardId { get; set; }
+
+        [Required]
+        public PaymentType Type { get; set; }
 
         [Required]
         public DateOnly Date { get; set; }
@@ -47,6 +51,7 @@ namespace MyAccounts.Database.Models
         public Payment (int cardId, DateOnly date, string detail, string comment)
         {
             CardId = cardId;
+            Type = PaymentType.Debit;
             Date = date;
             Detail = detail ?? throw new ArgumentNullException(nameof(detail));
             Comment = comment ?? throw new ArgumentNullException(nameof(comment));
@@ -55,6 +60,7 @@ namespace MyAccounts.Database.Models
         public Payment (int cardId, DateOnly date, string detail, string comment, int creditFees, decimal creditAmount)
         {
             CardId = cardId;
+            Type = PaymentType.Credit;
             Date = date;
             Detail = detail ?? throw new ArgumentNullException(nameof(detail));
             Comment = comment ?? throw new ArgumentNullException(nameof(comment));
