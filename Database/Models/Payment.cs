@@ -68,6 +68,17 @@ namespace MyAccounts.Database.Models
             CreditAmount = creditAmount;
         }
 
+        public Payment(int cardId, PaymentType type, DateOnly date, string detail, string comment, int? creditFees, decimal? creditAmount)
+        {
+            CardId = cardId;
+            Type = type;
+            Date = date;
+            Detail = detail ?? throw new ArgumentNullException(nameof(detail));
+            Comment = comment ?? throw new ArgumentNullException(nameof(comment));
+            CreditFees = creditFees;
+            CreditAmount = creditAmount;
+        }
+
         private decimal GetAmount ()
         {
             var sum = PaymentSplits?.Aggregate(0m, (sum, split) => sum + split.Amount);
