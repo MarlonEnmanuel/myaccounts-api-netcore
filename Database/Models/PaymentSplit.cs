@@ -32,9 +32,8 @@ namespace MyAccounts.Database.Models
 
         #region Others
 
-        public PaymentSplit (int paymentId, int personId, decimal amount)
+        public PaymentSplit (int personId, decimal amount)
         {
-            PaymentId = paymentId;
             PersonId = personId;
             Amount = amount;
         }

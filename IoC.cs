@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyAccounts.Database.Context;
 using MyAccounts.Modules.General;
+using MyAccounts.Modules.Payments;
 using MyAccounts.Modules.Security;
 using System.Text;
 
@@ -21,6 +22,7 @@ namespace MyAccounts
         {
             builder.Services.AddScoped<IGeneralService, GeneralService>();
             builder.Services.AddScoped<ISecurityService, SecurityService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
         }
 
         private static void ConfigureContext(WebApplicationBuilder builder)
