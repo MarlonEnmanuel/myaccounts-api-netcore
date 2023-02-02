@@ -1,15 +1,17 @@
-using MyAccounts;
+using MyAccounts.AppConfig;
 using MyAccounts.Database.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(AppOptions.SetJsonOptions);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(AppOptions.SetSwaggerGen);
 
-// Add custom configuration
-IoC.Configure(builder);
+// app services
+builder.Services.AddAppContext(builder.Configuration);
+builder.Services.AddAppAutentication(builder.Configuration);
+builder.Services.AddAppDendencies();
 
 var app = builder.Build();
 

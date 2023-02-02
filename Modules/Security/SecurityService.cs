@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MyAccounts.AppConfig;
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,12 +17,12 @@ namespace MyAccounts.Modules.Security
 
     public class SecurityService : ISecurityService
     {
-        private readonly IConfiguration _config;
+        private readonly IAppSettings _settings;
         private readonly MyAccountsContext _context;
 
-        public SecurityService (IConfiguration config, MyAccountsContext context)
+        public SecurityService(IAppSettings settings, MyAccountsContext context)
         {
-            _config = config;
+            _settings = settings;
             _context = context;
         }
 
@@ -34,7 +35,7 @@ namespace MyAccounts.Modules.Security
 
         public string BuildJwtToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.JwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
