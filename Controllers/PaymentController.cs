@@ -29,7 +29,7 @@ namespace MyAccounts.Controllers
         }
 
         [HttpPost]
-        public async Task<Payment> Post([FromBody] InputPaymentDto dto)
+        public async Task<PaymentDto> Post([FromBody] InputPaymentDto dto)
         {
             var payment = await _paymentService.CreatePayment(dto);
             return payment;

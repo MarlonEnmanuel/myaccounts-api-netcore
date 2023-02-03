@@ -8,7 +8,10 @@ builder.Services.AddControllers().AddJsonOptions(AppOptions.SetJsonOptions);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(AppOptions.SetSwaggerGen);
 
-// app services
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
+
+// App services
 builder.Services.AddAppContext(builder.Configuration);
 builder.Services.AddAppAutentication(builder.Configuration);
 builder.Services.AddAppDendencies();
