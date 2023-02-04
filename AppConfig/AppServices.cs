@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using MyAccounts.AppConfig.Attributes;
+using MyAccounts.AppConfig.JsonConverters;
 using MyAccounts.Database.Context;
 using MyAccounts.Modules.General;
 using MyAccounts.Modules.Payments;
 using MyAccounts.Modules.Security;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 namespace MyAccounts.AppConfig
@@ -47,6 +51,37 @@ namespace MyAccounts.AppConfig
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
                 };
+            });
+        }
+
+        public static void AddAppConfiguration(this IServiceCollection services)
+        {
+            services.Configure<JsonOptions>(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new NullableDateOnlyJsonConverter());
+            });
+
+            services.Configure<SwaggerGenOptions>(options =>
+            {
+                options.MapType<DateOnly>(() => new Microsoft.OpenApi.Models.OpenApiSchema
+                {
+                    Type = "string",
+                    Format = AppConstants.DATE_FORMART,
+                });
+            });
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+        }
+
+        public static void AddAppFilters(this IServiceCollection services)
+        {
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add<AppValidationFilter>();
             });
         }
     }

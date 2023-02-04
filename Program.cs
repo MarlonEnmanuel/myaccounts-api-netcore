@@ -5,15 +5,16 @@ using MyAccounts.Database.Context;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers(AppOptions.SetControllerOptions).AddJsonOptions(AppOptions.SetJsonOptions);
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(AppOptions.SetSwaggerGen);
+builder.Services.AddSwaggerGen();
 
-// AutoMapper
+// App libraries
 builder.Services.AddAutoMapper(typeof(Program));
 
-// App services
-builder.Services.Configure<ApiBehaviorOptions>(AppOptions.SetApiBehavior);
+// App customization
+builder.Services.AddAppConfiguration();
+builder.Services.AddAppFilters();
 builder.Services.AddAppContext(builder.Configuration);
 builder.Services.AddAppAutentication(builder.Configuration);
 builder.Services.AddAppDendencies();
