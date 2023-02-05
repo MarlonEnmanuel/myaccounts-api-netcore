@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
 using MyAccounts.AppConfig;
 using MyAccounts.Database.Context;
 
@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen();
 
 // App libraries
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // App customization
 builder.Services.AddAppConfiguration();
