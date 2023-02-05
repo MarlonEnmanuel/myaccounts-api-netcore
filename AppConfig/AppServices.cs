@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MyAccounts.AppConfig.Attributes;
+using MyAccounts.AppConfig.Filters;
 using MyAccounts.AppConfig.JsonConverters;
 using MyAccounts.Database.Context;
 using MyAccounts.Modules.General;
@@ -85,6 +85,7 @@ namespace MyAccounts.AppConfig
             services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add<AppValidationFilter>();
+                options.Filters.Add<AppExceptionFilter>();
             });
         }
     }

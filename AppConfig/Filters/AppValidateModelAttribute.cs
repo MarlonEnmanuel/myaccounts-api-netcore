@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using MyAccounts.AppConfig.Models;
 
-namespace MyAccounts.AppConfig.Attributes
+namespace MyAccounts.AppConfig.Filters
 {
     public class AppValidationFilter : IActionFilter
     {
@@ -10,7 +10,7 @@ namespace MyAccounts.AppConfig.Attributes
         {
             if (!context.ModelState.IsValid)
             {
-                var result = new AppErrorResult(AppErrorResult.ValidationTitle, context.ModelState);
+                var result = new AppErrorResult(context.ModelState);
                 context.Result = new UnprocessableEntityObjectResult(result);
             }
         }
