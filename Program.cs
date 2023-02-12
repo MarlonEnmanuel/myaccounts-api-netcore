@@ -15,6 +15,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // App customization
 builder.Services.AddAppConfiguration();
+builder.Services.AddAppPrincipal();
 builder.Services.AddAppFilters();
 builder.Services.AddAppContext(builder.Configuration);
 builder.Services.AddAppAutentication(builder.Configuration);

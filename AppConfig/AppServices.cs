@@ -10,6 +10,7 @@ using MyAccounts.Modules.Payments;
 using MyAccounts.Modules.Security;
 using MyAccounts.Modules.Shared.Validation;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Security.Principal;
 using System.Text;
 
 namespace MyAccounts.AppConfig
@@ -18,11 +19,16 @@ namespace MyAccounts.AppConfig
     {
         public static void AddAppDendencies(this IServiceCollection services)
         {
+            // shared
             services.AddScoped<IAppSettings, AppSettings>();
             services.AddScoped<IValidatorService, ValidatorService>();
 
-            services.AddScoped<IGeneralService, GeneralService>();
+            // security module
             services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IPrincipalService, PrincipalService>();
+
+            // others modules
+            services.AddScoped<IGeneralService, GeneralService>();
             services.AddScoped<IPaymentService, PaymentService>();
         }
 
@@ -87,6 +93,12 @@ namespace MyAccounts.AppConfig
                 options.Filters.Add<AppValidationFilter>();
                 options.Filters.Add<AppExceptionFilter>();
             });
+        }
+
+        public static void AddAppPrincipal(this IServiceCollection services)
+        {
+            services.AddHttpContextAccessor();
+            services.AddScoped<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()!.HttpContext!.User);
         }
     }
 }

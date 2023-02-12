@@ -2,6 +2,7 @@
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Enums;
 using MyAccounts.Modules.Payments.Dto;
+using MyAccounts.Modules.Security;
 using MyAccounts.Modules.Shared.Validation;
 
 namespace MyAccounts.Modules.Payments.Validators
@@ -9,10 +10,12 @@ namespace MyAccounts.Modules.Payments.Validators
     public class InputPaymentDtoValidator : AbstractValidator<InputPaymentDto>
     {
         private readonly MyAccountsContext _context;
+        private readonly IPrincipalService _principalService;
 
-        public InputPaymentDtoValidator(MyAccountsContext context)
+        public InputPaymentDtoValidator(MyAccountsContext context, IPrincipalService principalService)
         {
             _context = context;
+            _principalService = principalService;
             
             RuleFor(x => x.CardId)
                 .NotEmpty()
@@ -65,6 +68,12 @@ namespace MyAccounts.Modules.Payments.Validators
                             .GreaterThan(0)
                             ;
                 });
+            RuleFor(x => x.PaymentSplits)
+                .Must(list =>
+                {
+                    return list.Where(x => x.PersonId == _principalService.UserId).Any();
+                })
+                .WithMessage("El pago debe ser completa o parcialmente del usuario");
         }
     }
 }
