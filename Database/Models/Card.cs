@@ -1,10 +1,11 @@
 ﻿using MyAccounts.Database.Enums;
+using MyAccounts.Database.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace MyAccounts.Database.Models
 {
-    public class Card
+    public class Card : IIdentity
     {
         #region Attributes
 

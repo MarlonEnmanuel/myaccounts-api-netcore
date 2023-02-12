@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MyAccounts.Database.Context;
-using MyAccounts.Database.Enums;
 using MyAccounts.Database.Models;
 using MyAccounts.Modules.Payments.Dto;
 using MyAccounts.Modules.Payments.Validators;
-using MyAccounts.Modules.Shared;
+using MyAccounts.Modules.Shared.Validation;
 
 namespace MyAccounts.Modules.Payments
 {
@@ -17,18 +17,18 @@ namespace MyAccounts.Modules.Payments
     {
         private readonly MyAccountsContext _context;
         private readonly IMapper _mapper;
-        private readonly IDtoValidatorService _dtoValidator;
+        private readonly IValidatorService _validator;
 
-        public PaymentService(MyAccountsContext context, IMapper mapper, IDtoValidatorService dtoValidator)
+        public PaymentService(MyAccountsContext context, IMapper mapper, IValidatorService validator)
         {
             _context = context;
             _mapper = mapper;
-            _dtoValidator = dtoValidator;
+            _validator = validator;
         }
 
         public async Task<PaymentDto> CreatePayment(InputPaymentDto dto)
         {
-            _dtoValidator.ValidateAndThrow<InputPaymentDtoValidator, InputPaymentDto>(dto);
+            await _validator.GetDtoValidator<InputPaymentDtoValidator>().ValidateAndThrowAsync(dto);
 
             var newPayment = _mapper.Map<Payment>(dto);
 
@@ -37,15 +37,6 @@ namespace MyAccounts.Modules.Payments
             await _context.SaveChangesAsync();
 
             return _mapper.Map<PaymentDto>(newPayment);
-        }
-
-        private Payment ToPayment(InputPaymentDto dto, PaymentType type)
-        {
-            var parsedDate = DateOnly.ParseExact(dto.Date, "dd/MM/yyyy");
-            return new Payment(dto.CardId, type, parsedDate, dto.Detail, dto.Comment, dto.CreditFees, dto.CreditFees)
-            {
-                PaymentSplits = dto.PaymentSplits.Select(splitDto => new PaymentSplit(splitDto.PersonId, splitDto.Amount)).ToList(),
-            };
         }
     }
 }

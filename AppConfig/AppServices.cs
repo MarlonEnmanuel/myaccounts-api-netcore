@@ -8,7 +8,7 @@ using MyAccounts.Database.Context;
 using MyAccounts.Modules.General;
 using MyAccounts.Modules.Payments;
 using MyAccounts.Modules.Security;
-using MyAccounts.Modules.Shared;
+using MyAccounts.Modules.Shared.Validation;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
@@ -19,7 +19,7 @@ namespace MyAccounts.AppConfig
         public static void AddAppDendencies(this IServiceCollection services)
         {
             services.AddScoped<IAppSettings, AppSettings>();
-            services.AddScoped<IDtoValidatorService, DtoValidator>();
+            services.AddScoped<IValidatorService, ValidatorService>();
 
             services.AddScoped<IGeneralService, GeneralService>();
             services.AddScoped<ISecurityService, SecurityService>();

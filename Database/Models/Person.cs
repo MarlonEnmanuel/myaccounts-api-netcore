@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MyAccounts.Database.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace MyAccounts.Database.Models
 {
-    public class Person
+    public class Person : IIdentity
     {
         #region Attributes
 
