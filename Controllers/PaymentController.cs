@@ -18,9 +18,9 @@ namespace MyAccounts.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<PaymentDto>> Get()
         {
-            throw new NotImplementedException();
+            return await _paymentService.GetList();
         }
 
         [HttpGet("{id}")]

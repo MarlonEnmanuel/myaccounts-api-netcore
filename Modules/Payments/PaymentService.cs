@@ -6,6 +6,7 @@ using MyAccounts.Database.Context;
 using MyAccounts.Database.Models;
 using MyAccounts.Modules.Payments.Dto;
 using MyAccounts.Modules.Payments.Validators;
+using MyAccounts.Modules.Security;
 using MyAccounts.Modules.Shared;
 using MyAccounts.Modules.Shared.Validation;
 
@@ -13,6 +14,7 @@ namespace MyAccounts.Modules.Payments
 {
     public interface IPaymentService
     {
+        public Task<IList<PaymentDto>> GetList();
         public Task<PaymentDto> CreatePayment(InputPaymentDto dto);
         public Task<PaymentDto> EditPayment(InputPaymentDto dto);
     }
@@ -22,12 +24,26 @@ namespace MyAccounts.Modules.Payments
         private readonly MyAccountsContext _context;
         private readonly IMapper _mapper;
         private readonly IValidatorService _validator;
+        private readonly IPrincipalService _principal;
 
-        public PaymentService(MyAccountsContext context, IMapper mapper, IValidatorService validator)
+        public PaymentService(MyAccountsContext context, IMapper mapper, IValidatorService validator, IPrincipalService principal)
         {
             _context = context;
             _mapper = mapper;
             _validator = validator;
+            _principal = principal;
+        }
+
+        public async Task<IList<PaymentDto>> GetList()
+        {
+            var q = _context.Payments
+                            .Include(p => p.PaymentSplits)
+                            .Where(p => p.PaymentSplits.Any(s => s.PersonId == _principal.UserId))
+                            .AsSplitQuery();
+
+            var list = await q.ToListAsync();
+
+            return _mapper.Map<List<PaymentDto>>(list);
         }
 
         public async Task<PaymentDto> CreatePayment(InputPaymentDto dto)
