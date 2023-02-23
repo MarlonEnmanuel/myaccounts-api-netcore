@@ -5,17 +5,32 @@ namespace MyAccounts.AppConfig.Models
 {
     public class AppErrorResult
     {
-        public const string ValidationTitle = "Algunos datos son incorrectos";
-
         public string Title { get; set; }
 
-        public List<string> Errors { get; set; }
+        public List<string>? Errors { get; set; } = null;
 
-        public List<FieldError> Fields { get; set; }
+        public List<FieldError>? Fields { get; set; } = null;
 
-        public AppErrorResult(ModelStateDictionary modelState)
+        public AppErrorResult(string title)
         {
-            Title = ValidationTitle;
+            Title = title;
+        }
+
+        public AppErrorResult(string title, string error)
+        {
+            Title = title;
+            Errors = new List<string> { error };
+        }
+
+        public AppErrorResult(string title, params string[] errors)
+        {
+            Title = title;
+            Errors = errors.ToList();
+        }
+
+        public AppErrorResult(string title, ModelStateDictionary modelState)
+        {
+            Title = title;
 
             var getErrors = (string key) => modelState[key]!.Errors.Select(e => e.ErrorMessage).ToList();
 
@@ -30,11 +45,9 @@ namespace MyAccounts.AppConfig.Models
                         .ToList();
         }
 
-        public AppErrorResult(IEnumerable<ValidationFailure> validations)
+        public AppErrorResult(string title, IEnumerable<ValidationFailure> validations)
         {
-            Title = ValidationTitle;
-
-            Errors = new List<string>();
+            Title = title;
 
             var field = validations.Select(x => x.PropertyName).Distinct().ToList();
 
@@ -55,7 +68,7 @@ namespace MyAccounts.AppConfig.Models
     public class FieldError
     {
         public string Field { get; set; }
-        public List<string> Errors { get; set; } = new List<string>();
+        public List<string> Errors { get; set; }
 
         public FieldError(string field, List<string> errors)
         {

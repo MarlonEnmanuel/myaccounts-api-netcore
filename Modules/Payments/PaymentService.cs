@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using MyAccounts.AppConfig.Exceptions;
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Models;
 using MyAccounts.Modules.Payments.Dto;
 using MyAccounts.Modules.Payments.Validators;
+using MyAccounts.Modules.Shared;
 using MyAccounts.Modules.Shared.Validation;
 
 namespace MyAccounts.Modules.Payments
@@ -11,6 +14,7 @@ namespace MyAccounts.Modules.Payments
     public interface IPaymentService
     {
         public Task<PaymentDto> CreatePayment(InputPaymentDto dto);
+        public Task<PaymentDto> EditPayment(InputPaymentDto dto);
     }
 
     public class PaymentService : IPaymentService
@@ -37,6 +41,35 @@ namespace MyAccounts.Modules.Payments
             await _context.SaveChangesAsync();
 
             return _mapper.Map<PaymentDto>(newPayment);
+        }
+
+        public async Task<PaymentDto> EditPayment(InputPaymentDto dto)
+        {
+            await _validator.GetDtoValidator<InputPaymentDtoValidator>().ValidateAndThrowAsync(dto);
+
+            var payment = _mapper.Map<Payment>(dto);
+
+            var modifiedPayment = await UpdatePayment(payment);
+
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<PaymentDto>(modifiedPayment);
+        }
+
+        private async Task<Payment> UpdatePayment(Payment payment)
+        {
+            var originalPayment = await _context.Payments
+                                                .Include(p => p.PaymentSplits)
+                                                .AsSplitQuery()
+                                                .FirstOrDefaultAsync(p => p.Id == payment.Id);
+
+            if (originalPayment == null)
+                throw new AppErrorException(Errors.NOT_FOUND("pago", payment.Id));
+
+            _context.Entry(originalPayment).CurrentValues.SetValues(payment);
+            originalPayment.PaymentSplits = payment.PaymentSplits;
+
+            return originalPayment;
         }
     }
 }

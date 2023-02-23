@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyAccounts.Database.Models;
+using MyAccounts.AppConfig.Exceptions;
 using MyAccounts.Modules.Payments;
 using MyAccounts.Modules.Payments.Dto;
+using MyAccounts.Modules.Shared;
 
 namespace MyAccounts.Controllers
 {
@@ -31,14 +32,16 @@ namespace MyAccounts.Controllers
         [HttpPost]
         public async Task<PaymentDto> Post([FromBody] InputPaymentDto dto)
         {
-            var payment = await _paymentService.CreatePayment(dto);
-            return payment;
+            return await _paymentService.CreatePayment(dto);
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<PaymentDto> Put(int id, [FromBody] InputPaymentDto dto)
         {
-            throw new NotImplementedException();
+            if (dto.Id != id)
+                throw new AppClientException(Errors.DTO_ID_ERROR);
+
+            return await _paymentService.EditPayment(dto);
         }
 
         [HttpDelete("{id}")]
