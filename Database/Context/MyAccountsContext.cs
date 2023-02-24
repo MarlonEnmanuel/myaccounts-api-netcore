@@ -8,7 +8,12 @@ namespace MyAccounts.Database.Context
 {
     public class MyAccountsContext : DbContext
     {
-        public MyAccountsContext(DbContextOptions options) : base(options) { }
+        private readonly IPrincipalService _principal;
+
+        public MyAccountsContext(DbContextOptions options, IPrincipalService principal) : base(options)
+        {
+            _principal = principal;
+        }
 
         public DbSet<User> Users { get; set; } = default!;
         public DbSet<Person> Persons { get; set; } = default!;
@@ -37,7 +42,31 @@ namespace MyAccounts.Database.Context
             MyAccountsSeeder.Seed(modelBuilder);
         }
 
-        public Task<int> SaveChangesAsync(IPrincipalService _principal)
+        public override int SaveChanges()
+        {
+            HandleAuditables();
+            return base.SaveChanges();
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            HandleAuditables();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            HandleAuditables();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            HandleAuditables();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void HandleAuditables()
         {
             ChangeTracker
                 .Entries()
@@ -49,6 +78,7 @@ namespace MyAccounts.Database.Context
                     (e.Entity as IAuditable)!.CreatedDate = _principal.RequestDate;
                     (e.Entity as IAuditable)!.UpdatedDate = _principal.RequestDate;
                 });
+            
             ChangeTracker
                 .Entries()
                 .Where(e => e.Entity is IAuditable && e.State == EntityState.Modified)
@@ -59,7 +89,6 @@ namespace MyAccounts.Database.Context
                     (e.Entity as IAuditable)!.UpdatedBy = _principal.UserId;
                     (e.Entity as IAuditable)!.UpdatedDate = _principal.RequestDate;
                 });
-            return base.SaveChangesAsync();
         }
     }
 }

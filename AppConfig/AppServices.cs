@@ -105,7 +105,7 @@ namespace MyAccounts.AppConfig
         public static void AddAppPrincipal(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            services.AddScoped<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()!.HttpContext!.User);
+            services.AddScoped<IPrincipal>(provider => provider.GetService<IHttpContextAccessor>()?.HttpContext?.User!);
         }
     }
 }

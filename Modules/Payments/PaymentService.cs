@@ -54,7 +54,7 @@ namespace MyAccounts.Modules.Payments
 
             _context.Payments.Add(newPayment);
 
-            await _context.SaveChangesAsync(_principal);
+            await _context.SaveChangesAsync();
 
             return _mapper.Map<PaymentDto>(newPayment);
         }
@@ -67,7 +67,7 @@ namespace MyAccounts.Modules.Payments
 
             var modifiedPayment = await UpdatePayment(payment);
 
-            await _context.SaveChangesAsync(_principal);
+            await _context.SaveChangesAsync();
 
             return _mapper.Map<PaymentDto>(modifiedPayment);
         }
