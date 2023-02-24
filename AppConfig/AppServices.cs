@@ -69,6 +69,8 @@ namespace MyAccounts.AppConfig
             {
                 options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
                 options.JsonSerializerOptions.Converters.Add(new NullableDateOnlyJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+                options.JsonSerializerOptions.Converters.Add(new NullableDateTimeJsonConverter());
             });
 
             services.Configure<SwaggerGenOptions>(options =>
@@ -76,7 +78,12 @@ namespace MyAccounts.AppConfig
                 options.MapType<DateOnly>(() => new Microsoft.OpenApi.Models.OpenApiSchema
                 {
                     Type = "string",
-                    Format = AppConstants.DATE_FORMART,
+                    Format = $"\"{AppConstants.DATEONLY_FORMAT}\"",
+                });
+                options.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema
+                {
+                    Type = "string",
+                    Format = $"\"{AppConstants.DATETIME_FORMAT}\"",
                 });
             });
 

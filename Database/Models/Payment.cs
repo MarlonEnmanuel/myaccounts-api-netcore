@@ -1,10 +1,11 @@
 ﻿using MyAccounts.Database.Enums;
+using MyAccounts.Database.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace MyAccounts.Database.Models
 {
-    public class Payment
+    public class Payment : IIdentity, IAuditable
     {
         #region Attributes
 
@@ -32,6 +33,18 @@ namespace MyAccounts.Database.Models
         [Nullable]
         public decimal? CreditAmount { get; set; }
 
+        [Required]
+        public int CreatedBy { get; set; }
+
+        [Required]
+        public int UpdatedBy { get; set; }
+
+        [Required]
+        public DateTime CreatedDate { get; set; }
+
+        [Required]
+        public DateTime UpdatedDate { get; set; }
+
         #endregion
 
         #region Foreigns
@@ -47,26 +60,6 @@ namespace MyAccounts.Database.Models
         #region Others
 
         public decimal Amount => GetAmount();
-
-        public Payment (int cardId, DateOnly date, string detail, string comment)
-        {
-            CardId = cardId;
-            Type = PaymentType.Debit;
-            Date = date;
-            Detail = detail ?? throw new ArgumentNullException(nameof(detail));
-            Comment = comment ?? throw new ArgumentNullException(nameof(comment));
-        }
-
-        public Payment (int cardId, DateOnly date, string detail, string comment, int creditFees, decimal creditAmount)
-        {
-            CardId = cardId;
-            Type = PaymentType.Credit;
-            Date = date;
-            Detail = detail ?? throw new ArgumentNullException(nameof(detail));
-            Comment = comment ?? throw new ArgumentNullException(nameof(comment));
-            CreditFees = creditFees;
-            CreditAmount = creditAmount;
-        }
 
         public Payment(int cardId, PaymentType type, DateOnly date, string detail, string comment, int? creditFees, decimal? creditAmount)
         {

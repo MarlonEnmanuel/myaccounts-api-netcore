@@ -6,29 +6,28 @@ namespace MyAccounts.Modules.Security
     public interface IPrincipalService
     {
         public int UserId { get; }
+        public DateTime RequestDate { get; }
     }
 
     public class PrincipalService : IPrincipalService
     {
         private readonly ClaimsPrincipal? _claimsPrincipal;
         private int? userId;
+        private DateTime? requestDate;
+
+        public int UserId => userId ??= GetUserId();
+
+        public DateTime RequestDate => requestDate ??= DateTime.Now;
 
         public PrincipalService(IPrincipal principal)
         {
             _claimsPrincipal = (ClaimsPrincipal?)principal;
         }
 
-        public int UserId 
+        private int GetUserId()
         {
-            get
-            {
-                if (userId == null)
-                {
-                    var claim = _claimsPrincipal?.Claims?.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? "0";
-                    userId = int.Parse(claim);
-                }
-                return userId ?? 0;
-            }
+            var claim = _claimsPrincipal?.Claims?.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value ?? "0";
+            return int.TryParse(claim, out int userId) ? userId : 0;
         }
     }
 }

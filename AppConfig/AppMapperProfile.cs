@@ -15,7 +15,7 @@ namespace MyAccounts.AppConfig
     {
         public DateOnly Convert(string source, DateOnly destination, ResolutionContext context)
         {
-            return DateOnly.ParseExact(source, AppConstants.DATE_FORMART);
+            return DateOnly.ParseExact(source, AppConstants.DATEONLY_FORMAT);
         }
     }
 
@@ -23,7 +23,7 @@ namespace MyAccounts.AppConfig
     {
         public string Convert(DateOnly source, string destination, ResolutionContext context)
         {
-            return source.ToString(AppConstants.DATE_FORMART);
+            return source.ToString(AppConstants.DATEONLY_FORMAT);
         }
     }
 }

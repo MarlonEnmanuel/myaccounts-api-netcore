@@ -23,6 +23,14 @@ namespace MyAccounts.Modules.Payments.Dto
         public decimal Amount { get; set; }
 
         public virtual ICollection<PaymentSplitDto> PaymentSplits { get; set; } = Array.Empty<PaymentSplitDto>();
+
+        public int CreatedBy { get; set; }
+
+        public int UpdatedBy { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime UpdatedDate { get; set; }
     }
 
     public class PaymentSplitDto

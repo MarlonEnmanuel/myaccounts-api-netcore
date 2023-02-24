@@ -2,6 +2,7 @@
 {
     public class AppConstants
     {
-        public const string DATE_FORMART = "dd/MM/yyyy";
+        public const string DATEONLY_FORMAT = "yyyy-MM-dd";
+        public const string DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     }
 }

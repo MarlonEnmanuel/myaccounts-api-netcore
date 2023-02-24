@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyAccounts.Database.Config;
+using MyAccounts.Database.Interfaces;
 using MyAccounts.Database.Models;
+using MyAccounts.Modules.Security;
 
 namespace MyAccounts.Database.Context
 {
@@ -33,6 +35,31 @@ namespace MyAccounts.Database.Context
 
             // seeder
             MyAccountsSeeder.Seed(modelBuilder);
+        }
+
+        public Task<int> SaveChangesAsync(IPrincipalService _principal)
+        {
+            ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is IAuditable && e.State == EntityState.Added)
+                .ToList()
+                .ForEach(e => {
+                    (e.Entity as IAuditable)!.CreatedBy = _principal.UserId;
+                    (e.Entity as IAuditable)!.UpdatedBy = _principal.UserId;
+                    (e.Entity as IAuditable)!.CreatedDate = _principal.RequestDate;
+                    (e.Entity as IAuditable)!.UpdatedDate = _principal.RequestDate;
+                });
+            ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is IAuditable && e.State == EntityState.Modified)
+                .ToList()
+                .ForEach(e => {
+                    e.Property(nameof(IAuditable.CreatedBy)).IsModified = false;
+                    e.Property(nameof(IAuditable.CreatedDate)).IsModified = false;
+                    (e.Entity as IAuditable)!.UpdatedBy = _principal.UserId;
+                    (e.Entity as IAuditable)!.UpdatedDate = _principal.RequestDate;
+                });
+            return base.SaveChangesAsync();
         }
     }
 }
