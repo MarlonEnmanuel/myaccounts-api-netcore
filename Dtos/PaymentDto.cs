@@ -1,6 +1,6 @@
 ﻿using MyAccounts.Database.Enums;
 
-namespace MyAccounts.Modules.Payments.Dto
+namespace MyAccounts.Dtos
 {
     public class PaymentDto
     {
@@ -22,7 +22,7 @@ namespace MyAccounts.Modules.Payments.Dto
 
         public decimal Amount { get; set; }
 
-        public virtual ICollection<PaymentSplitDto> PaymentSplits { get; set; } = Array.Empty<PaymentSplitDto>();
+        public IList<PaymentSplitDto> PaymentSplits { get; set; } = null!;
 
         public int CreatedBy { get; set; }
 

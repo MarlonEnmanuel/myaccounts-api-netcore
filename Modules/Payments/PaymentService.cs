@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MyAccounts.AppConfig.Exceptions;
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Models;
-using MyAccounts.Modules.Payments.Dto;
+using MyAccounts.Dtos;
 using MyAccounts.Modules.Payments.Validators;
 using MyAccounts.Modules.Security;
 using MyAccounts.Modules.Shared;

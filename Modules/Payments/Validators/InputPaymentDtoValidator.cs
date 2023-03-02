@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Enums;
-using MyAccounts.Modules.Payments.Dto;
+using MyAccounts.Dtos;
 using MyAccounts.Modules.Security;
 using MyAccounts.Modules.Shared.Validation;
 

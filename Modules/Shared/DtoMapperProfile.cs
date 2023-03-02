@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using MyAccounts.Database.Models;
-using MyAccounts.Modules.Payments.Dto;
+using MyAccounts.Dtos;
 
-namespace MyAccounts.Modules.Payments
+namespace MyAccounts.Modules.Shared
 {
-    public class PaymentMapperProfile : Profile
+    public class DtoMapperProfile : Profile
     {
-        public PaymentMapperProfile()
+        public DtoMapperProfile()
         {
+            CreateMap<Person, PersonDto>();
+            CreateMap<Card, CardDto>();
+
             CreateMap<InputPaymentDto, Payment>();
             CreateMap<InputPaymentSplitDto, PaymentSplit>();
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyAccounts.AppConfig.Exceptions;
+using MyAccounts.Dtos;
 using MyAccounts.Modules.Payments;
-using MyAccounts.Modules.Payments.Dto;
 using MyAccounts.Modules.Shared;
 
 namespace MyAccounts.Controllers

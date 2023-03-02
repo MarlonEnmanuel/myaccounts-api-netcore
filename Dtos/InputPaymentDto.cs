@@ -1,6 +1,6 @@
 ﻿using MyAccounts.Database.Enums;
 
-namespace MyAccounts.Modules.Payments.Dto
+namespace MyAccounts.Dtos
 {
     public class InputPaymentDto
     {
