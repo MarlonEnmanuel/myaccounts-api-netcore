@@ -24,7 +24,7 @@ namespace MyAccounts.Database.Models
 
         #region Others
 
-        public Person? UserPerson => Persons.FirstOrDefault(p => p.IsUser);
+        public Person? Person => Persons.FirstOrDefault(p => p.IsUser);
 
         public User(string key)
         {

@@ -7,7 +7,7 @@
 
     public class AppSettings: IAppSettings
     {
-        public string JwtKey => GetString("Jwt.Key");
+        public string JwtKey => GetString("Jwt:Key");
 
         public AppSettings(IConfiguration configuration)
         {

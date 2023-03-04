@@ -41,7 +41,7 @@ namespace MyAccounts.Modules.Security
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserPerson?.Name ?? ""),
+                new Claim(ClaimTypes.Name, user.Person?.Name ?? ""),
             };
 
             var token = new JwtSecurityToken(
