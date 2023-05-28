@@ -6,7 +6,7 @@ using MyAccounts.AppConfig.Models;
 
 namespace MyAccounts.AppConfig.Filters
 {
-    public class AppExceptionFilter : IExceptionFilter
+    public class ApiExceptionFilter : IExceptionFilter
     {
         private const string VALIDATION_TITLE = "Algunos datos son incorrectos";
         private const string APP_ERROR_TITLE = "Ocurrió un problema";
@@ -21,22 +21,22 @@ namespace MyAccounts.AppConfig.Filters
             }
             catch (ValidationException exception)
             {
-                var errorResult = new AppErrorResult(VALIDATION_TITLE, exception.Errors);
+                var errorResult = new ApiError(VALIDATION_TITLE, exception.Errors);
                 context.Result = new UnprocessableEntityObjectResult(errorResult);
             }
-            catch (AppClientException exception)
+            catch (ApiClientException exception)
             {
-                var errorResult = new AppErrorResult(APP_ERROR_TITLE, exception.Message);
+                var errorResult = new ApiError(APP_ERROR_TITLE, exception.Message);
                 context.Result = new ObjectResult(errorResult) { StatusCode = StatusCodes.Status400BadRequest };
             }
-            catch (AppErrorException exception)
+            catch (ApiErrorException exception)
             {
-                var errorResult = new AppErrorResult(APP_ERROR_TITLE, exception.Message);
+                var errorResult = new ApiError(APP_ERROR_TITLE, exception.Message);
                 context.Result = new ObjectResult(errorResult) { StatusCode = StatusCodes.Status500InternalServerError };
             }
             catch
             {
-                var errorResult = new AppErrorResult(SERVER_ERROR_TITLE, exceptionString);
+                var errorResult = new ApiError(SERVER_ERROR_TITLE, exceptionString);
                 context.Result = new ObjectResult(errorResult) { StatusCode = StatusCodes.Status500InternalServerError };
             }
         }

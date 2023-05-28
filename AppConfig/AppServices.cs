@@ -65,6 +65,7 @@ namespace MyAccounts.AppConfig
 
         public static void AddAppConfiguration(this IServiceCollection services)
         {
+            // json data type converters
             services.Configure<JsonOptions>(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
@@ -73,6 +74,7 @@ namespace MyAccounts.AppConfig
                 options.JsonSerializerOptions.Converters.Add(new NullableDateTimeJsonConverter());
             });
 
+            // swagger map types
             services.Configure<SwaggerGenOptions>(options =>
             {
                 options.MapType<DateOnly>(() => new Microsoft.OpenApi.Models.OpenApiSchema
@@ -87,9 +89,10 @@ namespace MyAccounts.AppConfig
                 });
             });
 
+            // global configurations
             services.Configure<ApiBehaviorOptions>(options =>
             {
-                options.SuppressModelStateInvalidFilter = true;
+                options.SuppressModelStateInvalidFilter = true; // no validar stributos de DTOs
             });
         }
 
@@ -97,8 +100,7 @@ namespace MyAccounts.AppConfig
         {
             services.Configure<MvcOptions>(options =>
             {
-                options.Filters.Add<AppValidationFilter>();
-                options.Filters.Add<AppExceptionFilter>();
+                options.Filters.Add<ApiExceptionFilter>();
             });
         }
 

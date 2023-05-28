@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MyAccounts.AppConfig.Models
 {
-    public class AppErrorResult
+    public class ApiError
     {
         public string Title { get; set; }
 
@@ -11,24 +11,24 @@ namespace MyAccounts.AppConfig.Models
 
         public List<FieldError>? Fields { get; set; } = null;
 
-        public AppErrorResult(string title)
+        public ApiError(string title)
         {
             Title = title;
         }
 
-        public AppErrorResult(string title, string error)
+        public ApiError(string title, string error)
         {
             Title = title;
             Errors = new List<string> { error };
         }
 
-        public AppErrorResult(string title, params string[] errors)
+        public ApiError(string title, params string[] errors)
         {
             Title = title;
             Errors = errors.ToList();
         }
 
-        public AppErrorResult(string title, ModelStateDictionary modelState)
+        public ApiError(string title, ModelStateDictionary modelState)
         {
             Title = title;
 
@@ -45,7 +45,7 @@ namespace MyAccounts.AppConfig.Models
                         .ToList();
         }
 
-        public AppErrorResult(string title, IEnumerable<ValidationFailure> validations)
+        public ApiError(string title, IEnumerable<ValidationFailure> validations)
         {
             Title = title;
 
@@ -72,8 +72,20 @@ namespace MyAccounts.AppConfig.Models
 
         public FieldError(string field, List<string> errors)
         {
-            Field = field;
+            Field = fieldToCamel(field);
             Errors = errors;
+        }
+
+        private string fieldToCamel(string field)
+        {
+            return string.Join(".", field.Split(".").Select(s => toCamelCase(s)).ToArray());
+        }
+
+        private string toCamelCase(string val)
+        {
+            var strArray = val.ToCharArray().Select(e => e.ToString()).ToArray();
+            if (strArray.Length > 1) strArray[0] = strArray[0].ToLower();
+            return string.Join("", strArray);
         }
     }
 }

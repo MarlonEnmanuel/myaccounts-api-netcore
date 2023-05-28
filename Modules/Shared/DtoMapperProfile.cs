@@ -8,6 +8,7 @@ namespace MyAccounts.Modules.Shared
     {
         public DtoMapperProfile()
         {
+            CreateMap<User, UserDto>();
             CreateMap<Person, PersonDto>();
             CreateMap<Card, CardDto>();
 

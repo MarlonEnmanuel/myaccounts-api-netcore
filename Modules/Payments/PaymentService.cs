@@ -80,7 +80,7 @@ namespace MyAccounts.Modules.Payments
                                                 .FirstOrDefaultAsync(p => p.Id == payment.Id);
 
             if (originalPayment == null)
-                throw new AppErrorException(Errors.NOT_FOUND("pago", payment.Id));
+                throw new ApiErrorException(Errors.NOT_FOUND("pago", payment.Id));
 
             _context.Entry(originalPayment).CurrentValues.SetValues(payment);
             originalPayment.PaymentSplits = payment.PaymentSplits;

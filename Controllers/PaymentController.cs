@@ -39,7 +39,7 @@ namespace MyAccounts.Controllers
         public async Task<PaymentDto> Put(int id, [FromBody] InputPaymentDto dto)
         {
             if (dto.Id != id)
-                throw new AppClientException(Errors.DTO_ID_ERROR);
+                throw new ApiClientException(Errors.DTO_ID_ERROR);
 
             return await _paymentService.EditPayment(dto);
         }
