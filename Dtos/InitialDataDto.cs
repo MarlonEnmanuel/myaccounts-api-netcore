@@ -2,7 +2,7 @@
 {
     public class InitialDataDto
     {
-        public UserDto User { get; set; } = default!;
+        public UserDto LoguedUser { get; set; } = default!;
 
         public ICollection<PersonDto> Persons { get; set; } = default!;
 

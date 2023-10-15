@@ -1,5 +1,4 @@
 ﻿using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MyAccounts.AppConfig.Models
 {
@@ -7,9 +6,9 @@ namespace MyAccounts.AppConfig.Models
     {
         public string Title { get; set; }
 
-        public List<string>? Errors { get; set; } = null;
+        public string[]? Errors { get; set; } = null;
 
-        public List<FieldError>? Fields { get; set; } = null;
+        public IDictionary<string, string[]>? Fields2 { get; set; } = null;
 
         public ApiError(string title)
         {
@@ -19,30 +18,13 @@ namespace MyAccounts.AppConfig.Models
         public ApiError(string title, string error)
         {
             Title = title;
-            Errors = new List<string> { error };
+            Errors = new[] { error };
         }
 
         public ApiError(string title, params string[] errors)
         {
             Title = title;
-            Errors = errors.ToList();
-        }
-
-        public ApiError(string title, ModelStateDictionary modelState)
-        {
-            Title = title;
-
-            var getErrors = (string key) => modelState[key]!.Errors.Select(e => e.ErrorMessage).ToList();
-
-            Errors = modelState.Keys
-                        .Where(key => key == string.Empty)
-                        .SelectMany(key => getErrors(key))
-                        .ToList();
-
-            Fields = modelState.Keys
-                        .Where(key => key != string.Empty)
-                        .Select(key => new FieldError(key, getErrors(key)))
-                        .ToList();
+            Errors = errors;
         }
 
         public ApiError(string title, IEnumerable<ValidationFailure> validations)
@@ -51,41 +33,23 @@ namespace MyAccounts.AppConfig.Models
 
             var field = validations.Select(x => x.PropertyName).Distinct().ToList();
 
-            Fields = validations
+            Fields2 = validations
                         .Select(x => x.PropertyName)
                         .Distinct()
-                        .Select(field =>
+                        .Select(prop =>
                         {
-                            var e = validations.Where(v => v.PropertyName == field)
-                                                .Select(v => v.ErrorMessage)
-                                                .ToList();
-                            return new FieldError(field, e);
+                            var field = ToCamelCase(prop);
+                            var errors = validations.Where(v => v.PropertyName == prop)
+                                                    .Select(v => v.ErrorMessage)
+                                                    .ToArray();
+                            return new { field, errors };
                         })
-                        .ToList();
-        }
-    }
-
-    public class FieldError
-    {
-        public string Field { get; set; }
-        public List<string> Errors { get; set; }
-
-        public FieldError(string field, List<string> errors)
-        {
-            Field = fieldToCamel(field);
-            Errors = errors;
+                        .ToDictionary(o => o.field, o => o.errors);
         }
 
-        private string fieldToCamel(string field)
+        private string ToCamelCase(string source)
         {
-            return string.Join(".", field.Split(".").Select(s => toCamelCase(s)).ToArray());
-        }
-
-        private string toCamelCase(string val)
-        {
-            var strArray = val.ToCharArray().Select(e => e.ToString()).ToArray();
-            if (strArray.Length > 1) strArray[0] = strArray[0].ToLower();
-            return string.Join("", strArray);
+            return string.IsNullOrEmpty(source) ? source : char.ToLower(source[0]) + source.Substring(1);
         }
     }
 }

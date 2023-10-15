@@ -12,8 +12,8 @@ namespace MyAccounts.Modules.Shared
             CreateMap<Person, PersonDto>();
             CreateMap<Card, CardDto>();
 
-            CreateMap<InputPaymentDto, Payment>();
-            CreateMap<InputPaymentSplitDto, PaymentSplit>();
+            CreateMap<SavePaymentDto, Payment>();
+            CreateMap<SavePaymentSplitDto, PaymentSplit>();
 
             CreateMap<Payment, PaymentDto>();
             CreateMap<PaymentSplit, PaymentSplitDto>();

@@ -30,13 +30,13 @@ namespace MyAccounts.Controllers
         }
 
         [HttpPost]
-        public async Task<PaymentDto> Post([FromBody] InputPaymentDto dto)
+        public async Task<PaymentDto> Post([FromBody] SavePaymentDto dto)
         {
             return await _paymentService.CreatePayment(dto);
         }
 
         [HttpPut("{id}")]
-        public async Task<PaymentDto> Put(int id, [FromBody] InputPaymentDto dto)
+        public async Task<PaymentDto> Put(int id, [FromBody] SavePaymentDto dto)
         {
             if (dto.Id != id)
                 throw new ApiClientException(Errors.DTO_ID_ERROR);

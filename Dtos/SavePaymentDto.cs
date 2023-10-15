@@ -2,15 +2,15 @@
 
 namespace MyAccounts.Dtos
 {
-    public class InputPaymentDto
+    public class SavePaymentDto
     {
         public int Id { get; set; } = 0;
 
-        public int CardId { get; set; }
+        public string Date { get; set; } = null!;
 
         public PaymentType Type { get; set; }
 
-        public string Date { get; set; } = null!;
+        public int CardId { get; set; }
 
         public string Detail { get; set; } = null!;
 
@@ -20,10 +20,10 @@ namespace MyAccounts.Dtos
 
         public decimal? CreditAmount { get; set; }
 
-        public IList<InputPaymentSplitDto> PaymentSplits { get; set; } = null!;
+        public IList<SavePaymentSplitDto> PaymentSplits { get; set; } = null!;
     }
 
-    public class InputPaymentSplitDto
+    public class SavePaymentSplitDto
     {
         public int PersonId { get; set; }
 

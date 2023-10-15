@@ -15,8 +15,8 @@ namespace MyAccounts.Modules.Payments
     public interface IPaymentService
     {
         public Task<IList<PaymentDto>> GetList();
-        public Task<PaymentDto> CreatePayment(InputPaymentDto dto);
-        public Task<PaymentDto> EditPayment(InputPaymentDto dto);
+        public Task<PaymentDto> CreatePayment(SavePaymentDto dto);
+        public Task<PaymentDto> EditPayment(SavePaymentDto dto);
     }
 
     public class PaymentService : IPaymentService
@@ -46,9 +46,9 @@ namespace MyAccounts.Modules.Payments
             return _mapper.Map<List<PaymentDto>>(list);
         }
 
-        public async Task<PaymentDto> CreatePayment(InputPaymentDto dto)
+        public async Task<PaymentDto> CreatePayment(SavePaymentDto dto)
         {
-            await _validator.GetDtoValidator<InputPaymentDtoValidator>().ValidateAndThrowAsync(dto);
+            await _validator.GetDtoValidator<SavePaymentDtoValidator>().ValidateAndThrowAsync(dto);
 
             var newPayment = _mapper.Map<Payment>(dto);
 
@@ -59,9 +59,9 @@ namespace MyAccounts.Modules.Payments
             return _mapper.Map<PaymentDto>(newPayment);
         }
 
-        public async Task<PaymentDto> EditPayment(InputPaymentDto dto)
+        public async Task<PaymentDto> EditPayment(SavePaymentDto dto)
         {
-            await _validator.GetDtoValidator<InputPaymentDtoValidator>().ValidateAndThrowAsync(dto);
+            await _validator.GetDtoValidator<SavePaymentDtoValidator>().ValidateAndThrowAsync(dto);
 
             var payment = _mapper.Map<Payment>(dto);
 

@@ -32,7 +32,7 @@ namespace MyAccounts.Modules.General
 
             return new InitialDataDto
             {
-                User = new UserDto() { Id = userId, Name = mainPerson.Name, PersonId = mainPerson.Id },
+                LoguedUser = new UserDto() { Id = userId, Name = mainPerson.Name, PersonId = mainPerson.Id },
                 Persons = _mapper.Map<IList<PersonDto>>(persons),
                 Cards = _mapper.Map<IList<CardDto>>(mainPerson.Cards),
             };

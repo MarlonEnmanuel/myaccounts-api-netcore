@@ -2,16 +2,15 @@
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Enums;
 using MyAccounts.Dtos;
-using MyAccounts.Modules.Security;
 using MyAccounts.Modules.Shared.Validation;
 
 namespace MyAccounts.Modules.Payments.Validators
 {
-    public class InputPaymentDtoValidator : AbstractValidator<InputPaymentDto>
+    public class SavePaymentDtoValidator : AbstractValidator<SavePaymentDto>
     {
         private readonly MyAccountsContext _context;
 
-        public InputPaymentDtoValidator(MyAccountsContext context)
+        public SavePaymentDtoValidator(MyAccountsContext context)
         {
             _context = context;
             
