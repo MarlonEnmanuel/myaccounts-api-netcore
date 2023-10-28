@@ -46,7 +46,7 @@ namespace MyAccounts.Modules.Security
 
             var token = new JwtSecurityToken(
                                 claims: claims,
-                                expires: DateTime.UtcNow.AddMonths(24),
+                                expires: DateTime.UtcNow.AddDays(1),
                                 signingCredentials: credentials
                             );
 
