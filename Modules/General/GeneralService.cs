@@ -1,8 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Models;
 using MyAccounts.Dtos;
+using MyAccounts.Modules.Shared;
 
 namespace MyAccounts.Modules.General
 {
@@ -14,12 +14,12 @@ namespace MyAccounts.Modules.General
     public class GeneralService : IGeneralService
     {
         private readonly MyAccountsContext _context;
-        private readonly IMapper _mapper;
+        private readonly IDtoService _dtoService;
 
-        public GeneralService(MyAccountsContext context, IMapper mapper)
+        public GeneralService(MyAccountsContext context, IDtoService dtoService)
         {
             _context = context;
-            _mapper = mapper;
+            _dtoService = dtoService;
         }
 
         public async Task<InitialDataDto> GetInitialData(int userId)
@@ -33,8 +33,8 @@ namespace MyAccounts.Modules.General
             return new InitialDataDto
             {
                 LoguedUser = new UserDto() { Id = userId, Name = mainPerson.Name, PersonId = mainPerson.Id },
-                Persons = _mapper.Map<IList<PersonDto>>(persons),
-                Cards = _mapper.Map<IList<CardDto>>(mainPerson.Cards),
+                Persons = _dtoService.Map<IList<PersonDto>>(persons),
+                Cards = _dtoService.Map<IList<CardDto>>(mainPerson.Cards),
             };
         }
 

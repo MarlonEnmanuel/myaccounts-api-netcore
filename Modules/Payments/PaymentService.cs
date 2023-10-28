@@ -1,14 +1,10 @@
-﻿using AutoMapper;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyAccounts.AppConfig.Exceptions;
 using MyAccounts.Database.Context;
 using MyAccounts.Database.Models;
 using MyAccounts.Dtos;
-using MyAccounts.Modules.Payments.Validators;
 using MyAccounts.Modules.Security;
 using MyAccounts.Modules.Shared;
-using MyAccounts.Modules.Shared.Validation;
 
 namespace MyAccounts.Modules.Payments
 {
@@ -22,15 +18,13 @@ namespace MyAccounts.Modules.Payments
     public class PaymentService : IPaymentService
     {
         private readonly MyAccountsContext _context;
-        private readonly IMapper _mapper;
-        private readonly IValidatorService _validator;
+        private readonly IDtoService _dtoService;
         private readonly IPrincipalService _principal;
 
-        public PaymentService(MyAccountsContext context, IMapper mapper, IValidatorService validator, IPrincipalService principal)
+        public PaymentService(MyAccountsContext context, IDtoService dtoService, IPrincipalService principal)
         {
             _context = context;
-            _mapper = mapper;
-            _validator = validator;
+            _dtoService = dtoService;
             _principal = principal;
         }
 
@@ -43,33 +37,33 @@ namespace MyAccounts.Modules.Payments
 
             var list = await q.ToListAsync();
 
-            return _mapper.Map<List<PaymentDto>>(list);
+            return _dtoService.Map<List<PaymentDto>>(list);
         }
 
         public async Task<PaymentDto> CreatePayment(SavePaymentDto dto)
         {
-            await _validator.GetDtoValidator<SavePaymentDtoValidator>().ValidateAndThrowAsync(dto);
+            await _dtoService.ValidateAsync(dto);
 
-            var newPayment = _mapper.Map<Payment>(dto);
+            var newPayment = _dtoService.Map<Payment>(dto);
 
             _context.Payments.Add(newPayment);
 
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<PaymentDto>(newPayment);
+            return _dtoService.Map<PaymentDto>(newPayment);
         }
 
         public async Task<PaymentDto> EditPayment(SavePaymentDto dto)
         {
-            await _validator.GetDtoValidator<SavePaymentDtoValidator>().ValidateAndThrowAsync(dto);
+            await _dtoService.ValidateAsync(dto);
 
-            var payment = _mapper.Map<Payment>(dto);
+            var payment = _dtoService.Map<Payment>(dto);
 
             var modifiedPayment = await UpdatePayment(payment);
 
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<PaymentDto>(modifiedPayment);
+            return _dtoService.Map<PaymentDto>(modifiedPayment);
         }
 
         private async Task<Payment> UpdatePayment(Payment payment)
