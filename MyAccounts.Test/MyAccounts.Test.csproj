@@ -28,8 +28,4 @@
     <ProjectReference Include="..\MyAccounts.Api\MyAccounts.Api.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Modules\" />
-  </ItemGroup>
-
 </Project>
