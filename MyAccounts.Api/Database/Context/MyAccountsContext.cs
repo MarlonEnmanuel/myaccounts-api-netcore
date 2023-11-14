@@ -15,11 +15,13 @@ namespace MyAccounts.Api.Database.Context
             _principal = principal;
         }
 
-        public DbSet<User> Users { get; set; } = default!;
-        public DbSet<Person> Persons { get; set; } = default!;
-        public DbSet<Card> Cards { get; set; } = default!;
-        public DbSet<Payment> Payments { get; set; } = default!;
-        public DbSet<PaymentSplit> PaymentSplits { get; set; } = default!;
+        public MyAccountsContext() { }
+
+        public virtual DbSet<User> Users { get; set; } = default!;
+        public virtual DbSet<Person> Persons { get; set; } = default!;
+        public virtual DbSet<Card> Cards { get; set; } = default!;
+        public virtual DbSet<Payment> Payments { get; set; } = default!;
+        public virtual DbSet<PaymentSplit> PaymentSplits { get; set; } = default!;
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
