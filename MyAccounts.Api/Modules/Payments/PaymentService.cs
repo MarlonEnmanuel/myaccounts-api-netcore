@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyAccounts.Api.AppConfig.Exceptions;
-using MyAccounts.Api.Database.Context;
+using MyAccounts.Api.Database;
 using MyAccounts.Api.Database.Models;
 using MyAccounts.Api.Dtos;
 using MyAccounts.Api.Modules.Security;

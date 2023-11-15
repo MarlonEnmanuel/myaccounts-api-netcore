@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using MyAccounts.Api.Database.Context;
+using MyAccounts.Api.Database;
 using MyAccounts.Api.Database.Enums;
 using MyAccounts.Api.Dtos;
 using MyAccounts.Api.Modules.Shared.Validation;

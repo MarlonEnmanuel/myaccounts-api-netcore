@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyAccounts.Api.Database.Context;
+using MyAccounts.Api.Database;
 using MyAccounts.Api.Database.Models;
 using MyAccounts.Api.Dtos;
 using MyAccounts.Api.Modules.Shared;
@@ -24,23 +24,27 @@ namespace MyAccounts.Api.Modules.General
 
         public async Task<InitialDataDto> GetInitialData(int userId)
         {
-            var persons = await GetPersonsUserCanSee(userId);
-            var mainPerson = persons.FirstOrDefault(p => p.UserId == userId && p.IsUser)
-                             ?? throw new Exception("Usuario no tiene datos personales");
-
-            _context.Entry(mainPerson).Collection(p => p.Cards).Load();
+            var user = GetUser(userId) ?? throw new InvalidOperationException($"El usuario {userId} no existe");
+            var persons = await GetPersonsCanSeeByUser(userId);
+            var cards = persons.SelectMany(p => p.Cards ?? new());
 
             return new InitialDataDto
             {
-                LoguedUser = new UserDto() { Id = userId, Name = mainPerson.Name, PersonId = mainPerson.Id },
+                LoguedUser = _dtoService.Map<UserDto>(user),
                 Persons = _dtoService.Map<IList<PersonDto>>(persons),
-                Cards = _dtoService.Map<IList<CardDto>>(mainPerson.Cards),
+                Cards = _dtoService.Map<IList<CardDto>>(cards),
             };
         }
 
-        private async Task<IList<Person>> GetPersonsUserCanSee(int userId)
+        private async Task<User?> GetUser(int userId)
+        {
+            return await _context.Users.FindAsync(userId);
+        }
+
+        private async Task<IList<Person>> GetPersonsCanSeeByUser(int userId)
         {
             return await _context.Persons.Where(p => p.UserId == userId || p.IsShared)
+                                         .Include(p => p.Cards)
                                          .OrderByDescending(p => p.UserId == userId)
                                          .ToListAsync();
         }

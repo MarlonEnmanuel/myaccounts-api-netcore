@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 namespace MyAccounts.Api.Database.Models
 {
     [PrimaryKey(nameof(PaymentId), nameof(PersonId))]
     public class PaymentSplit
     {
-        #region Attributes
-
         [Required]
         public int PaymentId { get; set; }
 
@@ -18,26 +15,10 @@ namespace MyAccounts.Api.Database.Models
         [Required]
         public decimal Amount { get; set; }
 
-        #endregion
+        // foreigns
 
-        #region Foreigns
+        public Payment? Payment { get; set; }
 
-        [JsonIgnore]
-        public virtual Payment Payment { get; set; } = default!;
-
-        [JsonIgnore]
-        public virtual Person Person { get; set; } = default!;
-
-        #endregion
-
-        #region Others
-
-        public PaymentSplit (int personId, decimal amount)
-        {
-            PersonId = personId;
-            Amount = amount;
-        }
-
-        #endregion
+        public Person? Person { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Moq.Language;
 using Moq.Language.Flow;
-using MyAccounts.Api.Database.Context;
+using MyAccounts.Api.Database;
 using MyAccounts.Api.Modules.Shared;
 using System.Reflection;
 

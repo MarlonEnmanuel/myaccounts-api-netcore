@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyAccounts.Api.Database.Config;
+using MyAccounts.Api.Database.Context;
 using MyAccounts.Api.Database.Interfaces;
 using MyAccounts.Api.Database.Models;
 using MyAccounts.Api.Modules.Security;
 
-namespace MyAccounts.Api.Database.Context
+namespace MyAccounts.Api.Database
 {
     public class MyAccountsContext : DbContext
     {
@@ -74,18 +75,20 @@ namespace MyAccounts.Api.Database.Context
                 .Entries()
                 .Where(e => e.Entity is IAuditable && e.State == EntityState.Added)
                 .ToList()
-                .ForEach(e => {
+                .ForEach(e =>
+                {
                     (e.Entity as IAuditable)!.CreatedBy = _principal.UserId;
                     (e.Entity as IAuditable)!.UpdatedBy = _principal.UserId;
                     (e.Entity as IAuditable)!.CreatedDate = _principal.RequestDate;
                     (e.Entity as IAuditable)!.UpdatedDate = _principal.RequestDate;
                 });
-            
+
             ChangeTracker
                 .Entries()
                 .Where(e => e.Entity is IAuditable && e.State == EntityState.Modified)
                 .ToList()
-                .ForEach(e => {
+                .ForEach(e =>
+                {
                     e.Property(nameof(IAuditable.CreatedBy)).IsModified = false;
                     e.Property(nameof(IAuditable.CreatedDate)).IsModified = false;
                     (e.Entity as IAuditable)!.UpdatedBy = _principal.UserId;

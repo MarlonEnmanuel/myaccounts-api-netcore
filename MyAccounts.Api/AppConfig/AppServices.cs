@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyAccounts.Api.AppConfig.Filters;
 using MyAccounts.Api.AppConfig.JsonConverters;
-using MyAccounts.Api.Database.Context;
+using MyAccounts.Api.Database;
 using MyAccounts.Api.Modules.General;
 using MyAccounts.Api.Modules.Payments;
 using MyAccounts.Api.Modules.Security;

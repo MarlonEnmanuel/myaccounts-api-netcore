@@ -1,6 +1,6 @@
 using FluentValidation;
 using MyAccounts.Api.AppConfig;
-using MyAccounts.Api.Database.Context;
+using MyAccounts.Api.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 

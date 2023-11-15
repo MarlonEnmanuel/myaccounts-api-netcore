@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using MyAccounts.Api.AppConfig;
-using MyAccounts.Api.Database.Context;
+using MyAccounts.Api.Database;
 using MyAccounts.Api.Database.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -28,9 +27,7 @@ namespace MyAccounts.Api.Modules.Security
 
         public User? FindUser (string userKey)
         {
-            return _context.Users
-                            .Include(u => u.Persons)
-                            .FirstOrDefault(u => u.Key == userKey);
+            return _context.Users.FirstOrDefault(u => u.Password == userKey);
         }
 
         public string BuildJwtToken(User user)
@@ -41,7 +38,7 @@ namespace MyAccounts.Api.Modules.Security
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Person?.Name ?? ""),
+                new Claim(ClaimTypes.Name, user.Username ?? ""),
             };
 
             var token = new JwtSecurityToken(

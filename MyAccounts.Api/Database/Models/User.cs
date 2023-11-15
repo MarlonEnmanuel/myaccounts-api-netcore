@@ -1,36 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using MyAccounts.Api.Database.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyAccounts.Api.Database.Models
 {
-    public class User
+    public class User : IIdentity
     {
-        #region Attributes
-
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public string Key { get; set; }
+        public string Username { get; set; } = string.Empty;
 
-        #endregion
+        [Required]
+        public string Password { get; set; } = string.Empty;
 
-        #region Foreigns
+        // foreigns
 
-        [JsonIgnore]
-        public virtual ICollection<Person> Persons { get; set; } = default!;
-
-        #endregion
-
-        #region Others
-
-        public Person? Person => Persons.FirstOrDefault(p => p.IsUser);
-
-        public User(string key)
-        {
-            Key = key;
-        }
-
-        #endregion
+        public List<Person>? Persons { get; set; }
     }
 }
