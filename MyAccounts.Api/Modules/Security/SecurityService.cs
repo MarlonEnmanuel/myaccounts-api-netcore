@@ -8,12 +8,6 @@ using System.Text;
 
 namespace MyAccounts.Api.Modules.Security
 {
-    public interface ISecurityService
-    {
-        public User? FindUser(string userKey);
-        public string BuildJwtToken(User user);
-    }
-
     public class SecurityService : ISecurityService
     {
         private readonly IAppSettings _settings;

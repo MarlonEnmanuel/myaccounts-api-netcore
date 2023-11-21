@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyAccounts.Api.Dtos;
 using MyAccounts.Api.Modules.General;
+using MyAccounts.Api.Modules.General.Dtos;
 
 namespace MyAccounts.Api.Controllers
 {
@@ -18,9 +18,9 @@ namespace MyAccounts.Api.Controllers
 
         [HttpGet("initial")]
         [Authorize]
-        public async Task<InitialDataDto> GetInitialData ()
+        public async Task<AuthDataDto> GetAuthData ()
         {
-            return await _generalService.GetInitialData(UserId);
+            return await _generalService.GetAuthData(UserId);
         }
 
     }

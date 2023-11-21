@@ -1,16 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyAccounts.Api.Database;
 using MyAccounts.Api.Database.Models;
-using MyAccounts.Api.Dtos;
+using MyAccounts.Api.Modules.General.Dtos;
 using MyAccounts.Api.Modules.Shared;
 
 namespace MyAccounts.Api.Modules.General
 {
-    public interface IGeneralService
-    {
-        public Task<InitialDataDto> GetInitialData(int userId);
-    }
-
     public class GeneralService : IGeneralService
     {
         private readonly MyAccountsContext _context;
@@ -22,17 +17,17 @@ namespace MyAccounts.Api.Modules.General
             _dtoService = dtoService;
         }
 
-        public async Task<InitialDataDto> GetInitialData(int userId)
+        public async Task<AuthDataDto> GetAuthData(int userId)
         {
-            var user = GetUser(userId) ?? throw new InvalidOperationException($"El usuario {userId} no existe");
+            var user = await GetUser(userId) ?? throw new InvalidOperationException($"El usuario {userId} no existe");
             var persons = await GetPersonsCanSeeByUser(userId);
             var cards = persons.SelectMany(p => p.Cards ?? new());
 
-            return new InitialDataDto
+            return new AuthDataDto
             {
-                LoguedUser = _dtoService.Map<UserDto>(user),
-                Persons = _dtoService.Map<IList<PersonDto>>(persons),
-                Cards = _dtoService.Map<IList<CardDto>>(cards),
+                User = _dtoService.Map<UserAuthDto>(user),
+                Persons = _dtoService.Map<List<PersonAuthDto>>(persons),
+                Cards = _dtoService.Map<List<CardAuthDto>>(cards),
             };
         }
 

@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using MyAccounts.Api.Database;
 using MyAccounts.Api.Database.Enums;
-using MyAccounts.Api.Dtos;
-using MyAccounts.Api.Modules.Shared.Validation;
+using MyAccounts.Api.Modules.Payments.Dtos;
+using MyAccounts.Api.Modules.Shared.Extensions;
 
 namespace MyAccounts.Api.Modules.Payments.Validators
 {

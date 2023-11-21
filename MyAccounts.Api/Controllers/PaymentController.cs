@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyAccounts.Api.AppConfig.Exceptions;
-using MyAccounts.Api.Dtos;
 using MyAccounts.Api.Modules.Payments;
+using MyAccounts.Api.Modules.Payments.Dtos;
 using MyAccounts.Api.Modules.Shared;
 
 namespace MyAccounts.Api.Controllers
 {
     [Route("api/payment")]
     [ApiController]
-    public class PaymentController : ControllerBase
+    public class PaymentController : BaseController
     {
         private readonly IPaymentService _paymentService;
 
@@ -20,7 +20,7 @@ namespace MyAccounts.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<PaymentDto>> Get()
         {
-            return await _paymentService.GetList();
+            return await _paymentService.GetPaymentsByUser(UserId);
         }
 
         [HttpGet("{id}")]

@@ -3,12 +3,6 @@ using System.Security.Principal;
 
 namespace MyAccounts.Api.Modules.Security
 {
-    public interface IPrincipalService
-    {
-        public int UserId { get; }
-        public DateTime RequestDate { get; }
-    }
-
     public class PrincipalService : IPrincipalService
     {
         private readonly ClaimsPrincipal? _claimsPrincipal;

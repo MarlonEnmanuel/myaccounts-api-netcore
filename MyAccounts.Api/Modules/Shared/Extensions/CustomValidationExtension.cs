@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using MyAccounts.Api.Database.Interfaces;
 
-namespace MyAccounts.Api.Modules.Shared.Validation
+namespace MyAccounts.Api.Modules.Shared.Extensions
 {
-    public static class CustomValidationExtension
+    public static class FluentValidationExtension
     {
         private const string ENTITY_NOT_FOUND = "El registro no existe";
         private const string ENTITYS_NOT_FOUND = "Uno o más registros no existen";

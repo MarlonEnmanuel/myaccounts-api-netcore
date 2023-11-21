@@ -1,6 +1,6 @@
 ﻿using MyAccounts.Api.Database.Enums;
 
-namespace MyAccounts.Api.Dtos
+namespace MyAccounts.Api.Modules.Payments.Dtos
 {
     public class SavePaymentDto
     {

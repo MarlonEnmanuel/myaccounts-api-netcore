@@ -1,5 +1,6 @@
 ﻿using MyAccounts.Api.Database.Enums;
 using MyAccounts.Api.Database.Interfaces;
+using MyAccounts.Api.Modules.Shared.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyAccounts.Api.Database.Models
@@ -32,8 +33,6 @@ namespace MyAccounts.Api.Database.Models
 
         // others
 
-        public bool IsDebit => Type == PaymentType.Debit;
-
-        public bool IsCredit => Type == PaymentType.Credit;
+        public string TypeName => Type.GetDescription();
     }
 }

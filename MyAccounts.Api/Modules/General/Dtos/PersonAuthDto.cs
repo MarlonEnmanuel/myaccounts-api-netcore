@@ -1,6 +1,6 @@
-﻿namespace MyAccounts.Api.Dtos
+﻿namespace MyAccounts.Api.Modules.General.Dtos
 {
-    public class PersonDto
+    public class PersonAuthDto
     {
         public int Id { get; set; }
 

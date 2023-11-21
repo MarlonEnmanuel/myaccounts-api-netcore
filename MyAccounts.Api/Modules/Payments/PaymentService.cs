@@ -2,37 +2,27 @@
 using MyAccounts.Api.AppConfig.Exceptions;
 using MyAccounts.Api.Database;
 using MyAccounts.Api.Database.Models;
-using MyAccounts.Api.Dtos;
-using MyAccounts.Api.Modules.Security;
+using MyAccounts.Api.Modules.Payments.Dtos;
 using MyAccounts.Api.Modules.Shared;
 
 namespace MyAccounts.Api.Modules.Payments
 {
-    public interface IPaymentService
-    {
-        public Task<IList<PaymentDto>> GetList();
-        public Task<PaymentDto> CreatePayment(SavePaymentDto dto);
-        public Task<PaymentDto> EditPayment(SavePaymentDto dto);
-    }
-
     public class PaymentService : IPaymentService
     {
         private readonly MyAccountsContext _context;
         private readonly IDtoService _dtoService;
-        private readonly IPrincipalService _principal;
 
-        public PaymentService(MyAccountsContext context, IDtoService dtoService, IPrincipalService principal)
+        public PaymentService(MyAccountsContext context, IDtoService dtoService)
         {
             _context = context;
             _dtoService = dtoService;
-            _principal = principal;
         }
 
-        public async Task<IList<PaymentDto>> GetList()
+        public async Task<IList<PaymentDto>> GetPaymentsByUser(int userId)
         {
             var q = _context.Payments
                             .Include(p => p.PaymentSplits)
-                            .Where(p => p.PaymentSplits.Any(s => s.PersonId == _principal.UserId))
+                            .Where(p => p.PaymentSplits!.Any(s => s.PersonId == userId))
                             .AsSplitQuery();
 
             var list = await q.ToListAsync();
