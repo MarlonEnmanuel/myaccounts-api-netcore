@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -7,19 +6,25 @@ using Moq.Language;
 using Moq.Language.Flow;
 using MyAccounts.Api.Database;
 using MyAccounts.Api.Modules.Shared;
-using System.Reflection;
 
 namespace MyAccounts.Test
 {
     public static class MockHelper
     {
-        public static readonly IMapper MapperInstance = LoadMappers();
+        public static readonly IMapper MapperInstance;
 
-        public static readonly IServiceProvider ValidatorServices = LoadValidators();
+        static MockHelper()
+        {
+            var configurarion = new MapperConfiguration(cfg => {
+                cfg.AddMaps("MyAccounts.Api");
+            });
+            MapperInstance = configurarion.CreateMapper();
+        }
 
         public static Mock<DtoService> GetDtoServiceMock()
         {
-            var dtoServiceMock = new Mock<DtoService>(MapperInstance, ValidatorServices);
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            var dtoServiceMock = new Mock<DtoService>(MapperInstance, serviceProviderMock.Object);
 
             // Mock de Validate (para no validar)
             dtoServiceMock.Setup(s => s.Validate(It.IsAny<object>()))
@@ -49,21 +54,6 @@ namespace MyAccounts.Test
             contextMock.Setup(c => c.PaymentSplits).ReturnsDbSet(fakeDb.PaymentSplits);
 
             return contextMock;
-        }
-
-        private static IMapper LoadMappers()
-        {
-            var configurarion = new MapperConfiguration(cfg => {
-                cfg.AddMaps(Assembly.Load("MyAccounts.Api"));
-            });
-            return configurarion.CreateMapper();
-        }
-
-        private static IServiceProvider LoadValidators()
-        {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddValidatorsFromAssembly(Assembly.Load("MyAccounts.Api"));
-            return serviceCollection.BuildServiceProvider();
         }
 
         private static IReturnsResult<TMock> ReturnsDbSet<TMock, TEntity>(this IReturns<TMock, DbSet<TEntity>> setup, List<TEntity> sourceList)

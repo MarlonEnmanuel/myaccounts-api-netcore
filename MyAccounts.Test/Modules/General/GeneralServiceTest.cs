@@ -14,5 +14,14 @@ namespace MyAccounts.Test.Modules.General
 
             _service = new GeneralService(contextMock.Object, dtoserviceMock.Object);
         }
+
+        [Fact]
+        public void GetAuthData_ShouldThrowErrorIsUserNotExists()
+        {
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                await _service.GetAuthData(99);
+            });
+        }
     }
 }

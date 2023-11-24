@@ -24,12 +24,12 @@ namespace MyAccounts.Api.Modules.Shared
             return _mapper.Map(source, target);
         }
 
-        public void Validate<T>(T instance)
+        public virtual void Validate<T>(T instance)
         {
             _serviceProvider.GetRequiredService<IValidator<T>>().ValidateAndThrow(instance);
         }
 
-        public Task ValidateAsync<T>(T instance)
+        public virtual Task ValidateAsync<T>(T instance)
         {
             return _serviceProvider.GetRequiredService<IValidator<T>>().ValidateAndThrowAsync(instance);
         }
