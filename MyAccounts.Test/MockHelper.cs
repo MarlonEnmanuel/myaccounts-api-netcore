@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Moq.Language;
+using Moq.EntityFrameworkCore;
 using Moq.Language.Flow;
 using MyAccounts.Api.Database;
 using MyAccounts.Api.Modules.Shared;
@@ -47,50 +47,75 @@ namespace MyAccounts.Test
                        .Returns((CancellationToken token) => Task.FromResult(1));
 
             // Mock de los DBSets
-            contextMock.Setup(c => c.Users).ReturnsDbSet(fakeDb.Users);
-            contextMock.Setup(c => c.Persons).ReturnsDbSet(fakeDb.Persons);
-            contextMock.Setup(c => c.Cards).ReturnsDbSet(fakeDb.Cards);
-            contextMock.Setup(c => c.Payments).ReturnsDbSet(fakeDb.Payments);
-            contextMock.Setup(c => c.PaymentSplits).ReturnsDbSet(fakeDb.PaymentSplits);
+            contextMock.Setup(c => c.Users).MockDbSet(fakeDb.Users, u => u.Id);
+            contextMock.Setup(c => c.Persons).MockDbSet(fakeDb.Persons, p => p.Id);
+            contextMock.Setup(c => c.Cards).MockDbSet(fakeDb.Cards, c => c.Id);
+            contextMock.Setup(c => c.Payments).MockDbSet(fakeDb.Payments, p => p.Id);
+            contextMock.Setup(c => c.PaymentSplits).MockDbSet(fakeDb.PaymentSplits, p => $"{p.PersonId}{p.PaymentId}");
 
             return contextMock;
         }
 
-        private static IReturnsResult<TMock> ReturnsDbSet<TMock, TEntity>(this IReturns<TMock, DbSet<TEntity>> setup, List<TEntity> sourceList)
+        public static IReturnsResult<TMock> MockDbSet<TMock, TEntity>(
+            this ISetup<TMock, DbSet<TEntity>> setup,
+            List<TEntity> sourceList,
+            Func<TEntity, object> identifierSelector
+        )
             where TMock : class
             where TEntity : class
         {
-            var dbSetMock = new Mock<DbSet<TEntity>>();
-
-            // Mock para consultas
-            var queryable = sourceList.AsQueryable();
-            dbSetMock.As<IQueryable<TEntity>>().Setup(m => m.Provider).Returns(queryable.Provider);
-            dbSetMock.As<IQueryable<TEntity>>().Setup(m => m.Expression).Returns(queryable.Expression);
-            dbSetMock.As<IQueryable<TEntity>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
-            dbSetMock.As<IQueryable<TEntity>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
+            var mock = new Mock<DbSet<TEntity>>();
 
             // Mock para Add
-            dbSetMock.Setup(d => d.Add(It.IsAny<TEntity>()))
-                     .Callback<TEntity>(sourceList.Add);
+            mock.Setup(d => d.Add(It.IsAny<TEntity>()))
+                .Callback<TEntity>(sourceList.Add);
 
             // Mock para AddRange
-            dbSetMock.Setup(d => d.AddRange(It.IsAny<IEnumerable<TEntity>>()))
-                     .Callback<IEnumerable<TEntity>>(entities => sourceList.AddRange(entities));
+            mock.Setup(d => d.AddRange(It.IsAny<IEnumerable<TEntity>>()))
+                .Callback<IEnumerable<TEntity>>(entities => sourceList.AddRange(entities));
 
             // Mock para Remove
-            dbSetMock.Setup(d => d.Remove(It.IsAny<TEntity>()))
-                     .Callback<TEntity>(entity => sourceList.Remove(entity));
+            mock.Setup(d => d.Remove(It.IsAny<TEntity>()))
+                .Callback<TEntity>(entity =>
+                {
+                    var identifier = identifierSelector(entity);
+                    var toRemove = sourceList.FirstOrDefault(e => identifierSelector.Equals(identifier));
+                    if (toRemove != null) sourceList.Remove(toRemove);
+                });
 
             // Mock para RemoveRange
-            dbSetMock.Setup(d => d.RemoveRange(It.IsAny<IEnumerable<TEntity>>()))
-                     .Callback<IEnumerable<TEntity>>(entities =>
-                     {
-                         foreach (var entity in entities)
-                         {
-                             sourceList.Remove(entity);
-                         }
-                     });
-            return setup.Returns(dbSetMock.Object);
+            mock.Setup(d => d.RemoveRange(It.IsAny<IEnumerable<TEntity>>()))
+                .Callback<IEnumerable<TEntity>>(entities =>
+                {
+                    foreach (var entity in entities.ToList())
+                    {
+                        var identifier = identifierSelector(entity);
+                        var toRemove = sourceList.FirstOrDefault(e => identifierSelector.Equals(identifier));
+                        if (toRemove != null) sourceList.Remove(toRemove);
+                    }
+                });
+
+            // Mock para Find
+            mock.Setup(m => m.Find(It.IsAny<object[]>()))
+                .Returns<object[]>(ids =>
+                {
+                    if (ids == null || ids.Length == 0) return null;
+                    object identifier = ids.Length == 1 ? ids[0] : string.Join(string.Empty, ids);
+                    return sourceList.FirstOrDefault(e => identifierSelector(e).Equals(identifier));
+                });
+
+            // Mock para FindAsync
+            mock.Setup(m => m.FindAsync(It.IsAny<object[]>()))
+                .Returns<object[]>(ids =>
+                {
+                    if (ids == null || ids.Length == 0) return ValueTask.FromResult<TEntity?>(null);
+                    object identifier = ids.Length == 1 ? ids[0] : string.Join(string.Empty, ids);
+                    var result = sourceList.FirstOrDefault(e => identifierSelector(e).Equals(identifier));
+                    return ValueTask.FromResult(result);
+                });
+
+            // Mock para consultas
+            return setup.ReturnsDbSet(sourceList, mock);
         }
     }
 }

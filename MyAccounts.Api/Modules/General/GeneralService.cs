@@ -21,7 +21,7 @@ namespace MyAccounts.Api.Modules.General
         {
             var user = await GetUser(userId) ?? throw new InvalidOperationException($"El usuario {userId} no existe");
             var persons = await GetPersonsCanSeeByUser(userId);
-            var cards = persons.SelectMany(p => p.Cards ?? new());
+            var cards = persons.SelectMany(p => p.Cards!.Where(c => c.Person!.UserId == userId));
 
             return new AuthDataDto
             {
