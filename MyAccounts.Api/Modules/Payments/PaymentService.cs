@@ -20,12 +20,14 @@ namespace MyAccounts.Api.Modules.Payments
 
         public async Task<IList<PaymentDto>> GetPaymentsByUser(int userId)
         {
-            var q = _context.Payments
-                            .Include(p => p.PaymentSplits)
-                            .Where(p => p.PaymentSplits!.Any(s => s.PersonId == userId))
-                            .AsSplitQuery();
-
-            var list = await q.ToListAsync();
+            var q = from py in _context.Payments
+                    join ps in _context.PaymentSplits on py.Id equals ps.PaymentId
+                    join pe in _context.Persons on ps.PersonId equals pe.Id
+                    where pe.UserId == userId
+                    select py;
+            
+            var list = await q.Include(p => p.PaymentSplits)
+                              .ToListAsync();
 
             return _dtoService.Map<List<PaymentDto>>(list);
         }
@@ -47,29 +49,20 @@ namespace MyAccounts.Api.Modules.Payments
         {
             await _dtoService.ValidateAsync(dto);
 
-            var payment = _dtoService.Map<Payment>(dto);
+            var payment = await GetPaymentById(dto.Id) ?? 
+                            throw new ApiClientException(Errors.NOT_FOUND("el pago", dto.Id));
 
-            var modifiedPayment = await UpdatePayment(payment);
+            _dtoService.Map(dto, payment);
 
             await _context.SaveChangesAsync();
 
-            return _dtoService.Map<PaymentDto>(modifiedPayment);
+            return _dtoService.Map<PaymentDto>(payment);
         }
 
-        private async Task<Payment> UpdatePayment(Payment payment)
+        private async Task<Payment?> GetPaymentById(int paymentId)
         {
-            var originalPayment = await _context.Payments
-                                                .Include(p => p.PaymentSplits)
-                                                .AsSplitQuery()
-                                                .FirstOrDefaultAsync(p => p.Id == payment.Id);
-
-            if (originalPayment == null)
-                throw new ApiErrorException(Errors.NOT_FOUND("pago", payment.Id));
-
-            _context.Entry(originalPayment).CurrentValues.SetValues(payment);
-            originalPayment.PaymentSplits = payment.PaymentSplits;
-
-            return originalPayment;
+            return await _context.Payments.Include(p => p.PaymentSplits)
+                                    .FirstOrDefaultAsync(p => p.Id == paymentId);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace MyAccounts.Api.Modules.Payments.Dtos
 
         public decimal Amount { get; set; }
 
-        public IList<PaymentSplitDto> PaymentSplits { get; set; } = null!;
+        public List<PaymentSplitDto> PaymentSplits { get; set; } = default!;
 
         public int CreatedBy { get; set; }
 

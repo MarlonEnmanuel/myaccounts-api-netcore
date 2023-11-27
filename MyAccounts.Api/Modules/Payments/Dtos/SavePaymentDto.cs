@@ -6,21 +6,21 @@ namespace MyAccounts.Api.Modules.Payments.Dtos
     {
         public int Id { get; set; } = 0;
 
-        public string Date { get; set; } = null!;
+        public string Date { get; set; } = string.Empty;
 
         public PaymentType Type { get; set; }
 
         public int CardId { get; set; }
 
-        public string Detail { get; set; } = null!;
+        public string Detail { get; set; } = string.Empty;
 
-        public string Comment { get; set; } = null!;
+        public string Comment { get; set; } = string.Empty;
 
         public int? CreditFees { get; set; }
 
         public decimal? CreditAmount { get; set; }
 
-        public IList<SavePaymentSplitDto> PaymentSplits { get; set; } = null!;
+        public List<SavePaymentSplitDto> PaymentSplits { get; set; } = new();
     }
 
     public class SavePaymentSplitDto
