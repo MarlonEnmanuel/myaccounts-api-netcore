@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Moq.EntityFrameworkCore;
 using Moq.Language.Flow;
@@ -64,11 +63,18 @@ namespace MyAccounts.Test
             where TMock : class
             where TEntity : class
         {
+            TEntity? find(object[] ids)
+            {
+                if (ids == null || ids.Length == 0) return null;
+                object identifier = ids.Length == 1 ? ids[0] : string.Join(string.Empty, ids);
+                return sourceList.FirstOrDefault(e => identifierSelector(e).Equals(identifier));
+            }
+
             var mock = new Mock<DbSet<TEntity>>();
 
             // Mock para Add
             mock.Setup(d => d.Add(It.IsAny<TEntity>()))
-                .Callback<TEntity>(sourceList.Add);
+                .Callback<TEntity>(entity => sourceList.Add(entity));
 
             // Mock para AddRange
             mock.Setup(d => d.AddRange(It.IsAny<IEnumerable<TEntity>>()))
@@ -76,43 +82,19 @@ namespace MyAccounts.Test
 
             // Mock para Remove
             mock.Setup(d => d.Remove(It.IsAny<TEntity>()))
-                .Callback<TEntity>(entity =>
-                {
-                    var identifier = identifierSelector(entity);
-                    var toRemove = sourceList.FirstOrDefault(e => identifierSelector.Equals(identifier));
-                    if (toRemove != null) sourceList.Remove(toRemove);
-                });
+                .Callback<TEntity>(entity => sourceList.Remove(entity));
 
             // Mock para RemoveRange
             mock.Setup(d => d.RemoveRange(It.IsAny<IEnumerable<TEntity>>()))
-                .Callback<IEnumerable<TEntity>>(entities =>
-                {
-                    foreach (var entity in entities.ToList())
-                    {
-                        var identifier = identifierSelector(entity);
-                        var toRemove = sourceList.FirstOrDefault(e => identifierSelector.Equals(identifier));
-                        if (toRemove != null) sourceList.Remove(toRemove);
-                    }
-                });
+                .Callback<IEnumerable<TEntity>>(entities => { foreach (var e in entities) sourceList.Remove(e); });
 
             // Mock para Find
             mock.Setup(m => m.Find(It.IsAny<object[]>()))
-                .Returns<object[]>(ids =>
-                {
-                    if (ids == null || ids.Length == 0) return null;
-                    object identifier = ids.Length == 1 ? ids[0] : string.Join(string.Empty, ids);
-                    return sourceList.FirstOrDefault(e => identifierSelector(e).Equals(identifier));
-                });
+                .Returns<object[]>(ids => find(ids));
 
             // Mock para FindAsync
             mock.Setup(m => m.FindAsync(It.IsAny<object[]>()))
-                .Returns<object[]>(ids =>
-                {
-                    if (ids == null || ids.Length == 0) return ValueTask.FromResult<TEntity?>(null);
-                    object identifier = ids.Length == 1 ? ids[0] : string.Join(string.Empty, ids);
-                    var result = sourceList.FirstOrDefault(e => identifierSelector(e).Equals(identifier));
-                    return ValueTask.FromResult(result);
-                });
+                .Returns<object[]>(ids => ValueTask.FromResult(find(ids)));
 
             // Mock para consultas
             return setup.ReturnsDbSet(sourceList, mock);
