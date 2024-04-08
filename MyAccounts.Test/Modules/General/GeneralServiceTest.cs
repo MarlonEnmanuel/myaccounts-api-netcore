@@ -18,9 +18,9 @@ namespace MyAccounts.Test.Modules.General
         }
 
         [Fact]
-        public void GetAuthData_ShouldThrowErrorIsUserNotExists()
+        public async Task GetAuthData_ShouldThrowErrorIsUserNotExists()
         {
-            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             {
                 await _service.GetAuthData(99);
             });
