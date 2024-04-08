@@ -16,13 +16,11 @@ namespace MyAccounts.Api.Modules.Payments.Dtos
 
         public string Comment { get; set; } = null!;
 
-        public int? CreditFees { get; set; }
+        public decimal PaymentAmount { get; set; }
 
-        public decimal? CreditAmount { get; set; }
+        public int? Installments { get; set; }
 
-        public decimal Amount { get; set; }
-
-        public List<PaymentSplitDto> PaymentSplits { get; set; } = default!;
+        public decimal? InstallmentAmount { get; set; }
 
         public int CreatedBy { get; set; }
 
@@ -31,6 +29,8 @@ namespace MyAccounts.Api.Modules.Payments.Dtos
         public DateTime CreatedDate { get; set; }
 
         public DateTime UpdatedDate { get; set; }
+
+        public List<PaymentSplitDto> PaymentSplits { get; set; } = default!;
     }
 
     public class PaymentSplitDto

@@ -92,7 +92,7 @@ namespace MyAccounts.Api.AppConfig
             // global configurations
             services.Configure<ApiBehaviorOptions>(options =>
             {
-                options.SuppressModelStateInvalidFilter = true; // no validar stributos de DTOs
+                options.SuppressModelStateInvalidFilter = true; // no validar atributos de DTOs
             });
         }
 

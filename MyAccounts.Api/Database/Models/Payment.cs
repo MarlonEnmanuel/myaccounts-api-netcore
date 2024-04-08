@@ -24,11 +24,14 @@ namespace MyAccounts.Api.Database.Models
         [Required]
         public string Comment { get; set; } = string.Empty;
 
-        [Nullable]
-        public int? CreditFees { get; set; }
+        [Required]
+        public decimal PaymentAmount { get; set; }
 
-        [Nullable]
-        public decimal? CreditAmount { get; set; }
+        public int? Installments { get; set; }
+
+        public decimal? InstallmentAmount { get; set; }
+
+        // IAuditable
 
         [Required]
         public int CreatedBy { get; set; }
@@ -47,15 +50,5 @@ namespace MyAccounts.Api.Database.Models
         public Card? Card { get; set; }
 
         public List<PaymentSplit>? PaymentSplits { get; set; }
-
-        // others
-
-        public decimal Amount => GetAmount();
-
-        private decimal GetAmount ()
-        {
-            var sum = PaymentSplits?.Aggregate(0m, (sum, split) => sum + split.Amount);
-            return sum ?? throw new ArgumentNullException(nameof(PaymentSplits));
-        }
     }
 }

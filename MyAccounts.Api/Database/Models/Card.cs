@@ -19,10 +19,8 @@ namespace MyAccounts.Api.Database.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
-        [Nullable]
         public int? CutDay { get; set; }
 
-        [Nullable]
         public int? PaymentDay { get; set; }
 
         // foreigns
